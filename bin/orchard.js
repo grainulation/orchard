@@ -5,6 +5,7 @@ const path = require('node:path');
 const fs = require('node:fs');
 
 const COMMANDS = {
+  init: 'Initialize orchard.json in the current directory',
   plan: 'Show sprint dependency graph as ASCII',
   status: 'Show status of all tracked sprints',
   assign: 'Assign a person to a sprint',
@@ -58,6 +59,24 @@ async function main() {
     console.error(`Unknown command: ${command}`);
     console.error(`Run "orchard help" to see available commands.`);
     process.exit(1);
+  }
+
+  if (command === 'init') {
+    const { parseArgs } = require('node:util');
+    let rootDir = process.cwd();
+    try {
+      const { values } = parseArgs({ args: process.argv.slice(3), options: { root: { type: 'string' } }, allowPositionals: true });
+      if (values.root) rootDir = path.resolve(values.root);
+    } catch (_) { /* ignore parse errors for init */ }
+    const configPath = path.join(rootDir, 'orchard.json');
+    if (fs.existsSync(configPath)) {
+      console.error('orchard.json already exists');
+      process.exit(1);
+    }
+    const defaultConfig = { sprints: [], settings: { sync_interval: 'manual' } };
+    fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2) + '\n', 'utf8');
+    console.log('Initialized orchard.json — add sprints with `orchard plan`');
+    process.exit(0);
   }
 
   const root = findOrchardRoot();
