@@ -1,0 +1,26 @@
+{
+  "name": "@grainulator/field",
+  "version": "0.1.0",
+  "description": "Multi-sprint research orchestrator — coordinate parallel research across teams",
+  "main": "lib/planner.js",
+  "bin": {
+    "field": "bin/field.js"
+  },
+  "scripts": {
+    "test": "node test/basic.test.js",
+    "start": "node bin/field.js status"
+  },
+  "keywords": [
+    "research",
+    "sprint",
+    "orchestrator",
+    "multi-sprint",
+    "wheat"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grainulator/field.git"
+  }
+}

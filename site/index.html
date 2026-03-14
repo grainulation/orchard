@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Field — Multi-Sprint Research Orchestrator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: #0a0a0a;
+    color: #e5e5e5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .hero {
+    max-width: 640px;
+    text-align: center;
+  }
+  .logo {
+    font-size: 3.5rem;
+    font-weight: 800;
+    color: #a16207;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.5rem;
+  }
+  .tagline {
+    font-size: 1.2rem;
+    color: #a3a3a3;
+    margin-bottom: 2.5rem;
+    line-height: 1.5;
+  }
+  .terminal {
+    background: #171717;
+    border: 1px solid #262626;
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    text-align: left;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+    width: 100%;
+  }
+  .terminal .prompt { color: #737373; }
+  .terminal .cmd { color: #22c55e; }
+  .terminal .output { color: #a3a3a3; }
+  .terminal .highlight { color: #a16207; }
+  .terminal .active { color: #22c55e; }
+  .features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    width: 100%;
+    max-width: 640px;
+  }
+  .feature {
+    background: #171717;
+    border: 1px solid #262626;
+    border-radius: 8px;
+    padding: 1.25rem;
+    text-align: left;
+  }
+  .feature h3 {
+    color: #a16207;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .feature p {
+    color: #a3a3a3;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  .install {
+    background: #171717;
+    border: 1px solid #a16207;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: #e5e5e5;
+    margin-bottom: 1.5rem;
+  }
+  .links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .links a {
+    color: #a16207;
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+  .links a:hover { text-decoration: underline; }
+  footer {
+    color: #525252;
+    font-size: 0.75rem;
+    margin-top: 3rem;
+  }
+  @media (max-width: 600px) {
+    .features { grid-template-columns: 1fr; }
+    .logo { font-size: 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">field</div>
+  <p class="tagline">Orchestrate research across your organization.<br>12 sprints running. One command to see them all.</p>
+
+  <div class="terminal">
+    <span class="prompt">$</span> <span class="cmd">npx @grainulator/field status</span><br>
+    <br>
+    <span class="output">  12 sprints tracked. <span class="active">8 active</span>, 3 done, 1 blocked.</span><br>
+    <span class="output">  </span><span class="highlight">----------------------------------------------------------------------</span><br>
+    <span class="output">  Sprint              Status        Claims    Assigned        Deadline</span><br>
+    <span class="output">  </span><span class="highlight">----------------------------------------------------------------------</span><br>
+    <span class="output">  auth-scaling        </span><span class="active">* active</span><span class="output">      23        alice           2026-03-20</span><br>
+    <span class="output">  data-migration      </span><span class="active">* active</span><span class="output">      17        bob             2026-03-22</span><br>
+    <span class="output">  api-design          x done          41        carol           -</span><br>
+    <span class="output">  perf-baseline       ! blocked        8        -               2026-03-25</span><br>
+  </div>
+
+  <div class="features">
+    <div class="feature">
+      <h3>Dependency Graphs</h3>
+      <p>Sprint B needs Sprint A's results. Field tracks it and shows the critical path.</p>
+    </div>
+    <div class="feature">
+      <h3>Conflict Detection</h3>
+      <p>Two sprints reach opposing conclusions? Field flags it before it becomes a problem.</p>
+    </div>
+    <div class="feature">
+      <h3>Team Assignment</h3>
+      <p>See who's running what, who's overloaded, and which sprints need owners.</p>
+    </div>
+    <div class="feature">
+      <h3>Unified Dashboard</h3>
+      <p>One HTML file. Every sprint, every claim, every deadline. Self-contained.</p>
+    </div>
+  </div>
+
+  <div class="install">npx @grainulator/field plan</div>
+
+  <div class="links">
+    <a href="https://github.com/grainulator/field">GitHub</a>
+    <a href="https://github.com/grainulator/field#readme">Docs</a>
+  </div>
+</div>
+
+<footer>Part of the Grainulator suite &mdash; built on Wheat research sprints</footer>
+
+</body>
+</html>
