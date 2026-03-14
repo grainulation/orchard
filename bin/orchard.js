@@ -14,17 +14,17 @@ const COMMANDS = {
 };
 
 function loadConfig(dir) {
-  const configPath = path.join(dir, 'field.json');
+  const configPath = path.join(dir, 'orchard.json');
   if (!fs.existsSync(configPath)) {
     return null;
   }
   return JSON.parse(fs.readFileSync(configPath, 'utf8'));
 }
 
-function findFieldRoot() {
+function findOrchardRoot() {
   let dir = process.cwd();
   while (dir !== path.dirname(dir)) {
-    if (fs.existsSync(path.join(dir, 'field.json'))) return dir;
+    if (fs.existsSync(path.join(dir, 'orchard.json'))) return dir;
     dir = path.dirname(dir);
   }
   return null;
@@ -32,16 +32,16 @@ function findFieldRoot() {
 
 function printHelp() {
   console.log('');
-  console.log('  field - Multi-sprint research orchestrator');
+  console.log('  orchard - Multi-sprint research orchestrator');
   console.log('');
-  console.log('  Usage: field <command> [options]');
+  console.log('  Usage: orchard <command> [options]');
   console.log('');
   console.log('  Commands:');
   for (const [cmd, desc] of Object.entries(COMMANDS)) {
     console.log(`    ${cmd.padEnd(12)} ${desc}`);
   }
   console.log('');
-  console.log('  Config: field.json in project root');
+  console.log('  Config: orchard.json in project root');
   console.log('');
 }
 
@@ -56,13 +56,13 @@ async function main() {
 
   if (!COMMANDS[command]) {
     console.error(`Unknown command: ${command}`);
-    console.error(`Run "field help" to see available commands.`);
+    console.error(`Run "orchard help" to see available commands.`);
     process.exit(1);
   }
 
-  const root = findFieldRoot();
+  const root = findOrchardRoot();
   if (!root && command !== 'help') {
-    console.error('No field.json found. Run from a directory with field.json or a subdirectory.');
+    console.error('No orchard.json found. Run from a directory with orchard.json or a subdirectory.');
     console.error('');
     console.error('Create one:');
     console.error('  { "sprints": [] }');
@@ -87,7 +87,7 @@ async function main() {
       const sprintPath = args[1];
       const person = args[2];
       if (!sprintPath || !person) {
-        console.error('Usage: field assign <sprint-path> <person>');
+        console.error('Usage: orchard assign <sprint-path> <person>');
         process.exit(1);
       }
       assignSprint(config, root, sprintPath, person);
@@ -100,7 +100,7 @@ async function main() {
     }
     case 'dashboard': {
       const { generateDashboard } = require('../lib/dashboard.js');
-      const outPath = args[1] || path.join(root, 'field-dashboard.html');
+      const outPath = args[1] || path.join(root, 'orchard-dashboard.html');
       generateDashboard(config, root, outPath);
       break;
     }

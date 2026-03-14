@@ -347,7 +347,7 @@ const { detectConflicts } = require('../lib/conflicts.js');
 {
   const fs = require('node:fs');
   const os = require('node:os');
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'field-conflict-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'orchard-conflict-'));
   const sprintA = path.join(tmp, 'sprint-a');
   const sprintB = path.join(tmp, 'sprint-b');
   fs.mkdirSync(sprintA, { recursive: true });
@@ -383,7 +383,7 @@ const { detectConflicts } = require('../lib/conflicts.js');
 {
   const fs = require('node:fs');
   const os = require('node:os');
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'field-same-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'orchard-same-'));
   const sprintA = path.join(tmp, 'sprint-a');
   fs.mkdirSync(sprintA, { recursive: true });
 
@@ -428,7 +428,7 @@ const { readSprintState } = require('../lib/tracker.js');
 {
   const fs = require('node:fs');
   const os = require('node:os');
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'field-tracker-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'orchard-tracker-'));
   fs.writeFileSync(path.join(tmp, 'claims.json'), JSON.stringify({
     claims: [
       { id: 'r001', text: 'test' },
@@ -448,7 +448,7 @@ const { readSprintState } = require('../lib/tracker.js');
 {
   const fs = require('node:fs');
   const os = require('node:os');
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'field-tracker2-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'orchard-tracker2-'));
   fs.writeFileSync(path.join(tmp, 'claims.json'), JSON.stringify({
     claims: [{ id: 'r001', text: 'test' }],
   }));
@@ -466,7 +466,7 @@ const { readSprintState } = require('../lib/tracker.js');
 {
   const fs = require('node:fs');
   const os = require('node:os');
-  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'field-tracker3-'));
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'orchard-tracker3-'));
   fs.writeFileSync(path.join(tmp, 'claims.json'), JSON.stringify({ claims: [] }));
   const state = readSprintState(tmp, '/');
   assert.strictEqual(state.exists, true);

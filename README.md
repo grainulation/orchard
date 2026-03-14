@@ -1,13 +1,13 @@
-# field
+# orchard
 
 > 12 sprints running. One command to see them all.
 
-**Field** is the multi-sprint orchestrator for [Wheat](https://github.com/grainulator/wheat) research sprints. It coordinates parallel research across teams with dependency tracking, conflict detection, and unified dashboards.
+**Orchard** is the multi-sprint orchestrator for [Wheat](https://github.com/grainulator/wheat) research sprints. It coordinates parallel research across teams with dependency tracking, conflict detection, and unified dashboards.
 
 ## Install
 
 ```bash
-npx @grainulator/field status
+npx @grainulator/orchard status
 ```
 
 ## What it does
@@ -22,7 +22,7 @@ npx @grainulator/field status
 
 ## Quick start
 
-Create a `field.json` in your project root:
+Create a `orchard.json` in your project root:
 
 ```json
 {
@@ -51,33 +51,33 @@ Then:
 
 ```bash
 # See the dependency graph
-field plan
+orchard plan
 
 # Check status of all sprints
-field status
+orchard status
 
 # Assign someone to a sprint
-field assign ./sprints/data-migration carol
+orchard assign ./sprints/data-migration carol
 
 # Sync status from sprint directories
-field sync
+orchard sync
 
 # Generate HTML dashboard
-field dashboard
+orchard dashboard
 ```
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `field plan` | Show sprint dependency graph as ASCII |
-| `field status` | Show status of all tracked sprints |
-| `field assign <path> <person>` | Assign a person to a sprint |
-| `field sync` | Sync sprint states from their directories |
-| `field dashboard [outfile]` | Generate unified HTML dashboard |
-| `field help` | Show help |
+| `orchard plan` | Show sprint dependency graph as ASCII |
+| `orchard status` | Show status of all tracked sprints |
+| `orchard assign <path> <person>` | Assign a person to a sprint |
+| `orchard sync` | Sync sprint states from their directories |
+| `orchard dashboard [outfile]` | Generate unified HTML dashboard |
+| `orchard help` | Show help |
 
-## field.json schema
+## orchard.json schema
 
 ```typescript
 {
@@ -94,22 +94,22 @@ field dashboard
 
 ## How it works
 
-Field reads `field.json` for the sprint graph, then scans each sprint directory for `claims.json` and `compilation.json` to determine actual state. It detects conflicts by comparing claims across sprints that share tags.
+Orchard reads `orchard.json` for the sprint graph, then scans each sprint directory for `claims.json` and `compilation.json` to determine actual state. It detects conflicts by comparing claims across sprints that share tags.
 
 ### Conflict detection
 
-Field flags two types of cross-sprint conflicts:
+Orchard flags two types of cross-sprint conflicts:
 
 1. **Opposing recommendations** -- two sprints make recommendations on the same topic that may contradict
 2. **Constraint-recommendation tension** -- one sprint's constraints conflict with another's recommendations
 
 ### Dependency tracking
 
-Sprints can declare dependencies. Field uses topological sorting to determine execution order and flags cycles. The `plan` command renders this as ASCII art.
+Sprints can declare dependencies. Orchard uses topological sorting to determine execution order and flags cycles. The `plan` command renders this as ASCII art.
 
 ## Zero dependencies
 
-Field uses only Node.js built-in modules. No npm install required.
+Orchard uses only Node.js built-in modules. No npm install required.
 
 ## License
 
