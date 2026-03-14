@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>field — Orchestrate research across your organization</title>
 <meta name="description" content="Run parallel research sprints with dependencies, conflict detection, and team assignment. One command to see them all.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="field — Orchestrate research across your organization">
+<meta property="og:description" content="Run parallel research sprints with dependencies, conflict detection, and team assignment. One command to see them all.">
+<meta property="og:url" content="https://grainulator.github.io/field/">
+<link rel="canonical" href="https://grainulator.github.io/field/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2309090b'/><text x='32' y='48' text-anchor='middle' font-family='system-ui,sans-serif' font-weight='800' font-size='44' fill='%23a16207'>f</text></svg>">
 <style>
 :root {
@@ -134,7 +139,7 @@ footer a{color:var(--text-2)}
       <a href="#quickstart">Quick Start</a>
       <a href="#example">Example</a>
       <a href="#features">Features</a>
-      <a href="https://github.com/aid-ninja/field" class="nav-cta">GitHub</a>
+      <a href="https://github.com/grainulator/field" class="nav-cta">GitHub</a>
     </div>
   </div>
 </nav>
@@ -172,8 +177,8 @@ footer a{color:var(--text-2)}
         <h3>Plan the work</h3>
         <p>Field analyzes dependencies and shows the critical path. See what is blocked and what can run in parallel.</p>
         <div class="copy-wrap">
-          <div class="qs-code"><span class="dim">$</span> field plan</div>
-          <button class="copy-btn" onclick="copyText(this,'field plan')">Copy</button>
+          <div class="qs-code"><span class="dim">$</span> npx @grainulator/field plan</div>
+          <button class="copy-btn" onclick="copyText(this,'npx @grainulator/field plan')">Copy</button>
         </div>
       </div>
       <div class="qs-step rv rv-d3">
@@ -181,8 +186,8 @@ footer a{color:var(--text-2)}
         <h3>Check status</h3>
         <p>One command shows all sprints, their progress, and any cross-sprint conflicts.</p>
         <div class="copy-wrap">
-          <div class="qs-code"><span class="dim">$</span> field status</div>
-          <button class="copy-btn" onclick="copyText(this,'field status')">Copy</button>
+          <div class="qs-code"><span class="dim">$</span> npx @grainulator/field status</div>
+          <button class="copy-btn" onclick="copyText(this,'npx @grainulator/field status')">Copy</button>
         </div>
       </div>
     </div>
@@ -198,7 +203,7 @@ footer a{color:var(--text-2)}
     <p class="section-sub rv rv-d2">Your team is researching auth scaling, data migration, API design, and performance. Some depend on others.</p>
 
     <div class="term-block rv rv-d3">
-<span class="prompt">$</span> <span class="cmd">field status</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/field status</span>
 
 <span class="output">  4 sprints tracked. <span class="active">2 active</span>, 1 done, 1 blocked.</span>
 
@@ -209,7 +214,7 @@ footer a{color:var(--text-2)}
 <span class="output">  api-design        x done       41     carol   -            -</span>
 <span class="output">  perf-baseline     <span class="warn">! blocked</span>     8     -       2026-03-25   auth-scaling</span>
 
-<span class="prompt">$</span> <span class="cmd">field plan</span>
+<span class="prompt">$</span> <span class="cmd">npx @grainulator/field plan</span>
 
 <span class="output">  Dependency graph:</span>
 
@@ -274,19 +279,19 @@ footer a{color:var(--text-2)}
     <h2 class="section-title rv rv-d1">The orchestration layer</h2>
     <p class="section-sub rv rv-d2" style="margin-left:auto;margin-right:auto">Wheat runs sprints. Field coordinates them across your organization.</p>
     <div class="eco-grid rv rv-d3">
-      <a href="https://github.com/aid-ninja/wheat" class="eco-chip"><span class="eco-dot" style="background:#fbbf24"></span>wheat -- research sprints</a>
-      <a href="https://github.com/aid-ninja/farmer" class="eco-chip"><span class="eco-dot" style="background:#22c55e"></span>farmer -- permission dashboard</a>
-      <a href="https://github.com/aid-ninja/grove" class="eco-chip"><span class="eco-dot" style="background:#10b981"></span>grove -- shared tools</a>
-      <a href="https://github.com/aid-ninja/mill" class="eco-chip"><span class="eco-dot" style="background:#d97706"></span>mill -- export &amp; publish</a>
-      <a href="https://github.com/aid-ninja/silo" class="eco-chip"><span class="eco-dot" style="background:#3b82f6"></span>silo -- knowledge packs</a>
-      <a href="https://github.com/aid-ninja/harvest" class="eco-chip"><span class="eco-dot" style="background:#f97316"></span>harvest -- analytics</a>
+      <a href="https://grainulator.github.io/wheat/" class="eco-chip"><span class="eco-dot" style="background:#fbbf24"></span>wheat -- research sprints</a>
+      <a href="https://grainulator.github.io/farmer/" class="eco-chip"><span class="eco-dot" style="background:#22c55e"></span>farmer -- permission dashboard</a>
+      <a href="https://grainulator.github.io/grove/" class="eco-chip"><span class="eco-dot" style="background:#10b981"></span>grove -- shared tools</a>
+      <a href="https://grainulator.github.io/mill/" class="eco-chip"><span class="eco-dot" style="background:#d97706"></span>mill -- export &amp; publish</a>
+      <a href="https://grainulator.github.io/silo/" class="eco-chip"><span class="eco-dot" style="background:#3b82f6"></span>silo -- knowledge packs</a>
+      <a href="https://grainulator.github.io/harvest/" class="eco-chip"><span class="eco-dot" style="background:#f97316"></span>harvest -- analytics</a>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
-    <p>field &middot; MIT License &middot; <a href="https://github.com/aid-ninja/field">GitHub</a> &middot; <a href="https://github.com/aid-ninja/field#readme">Docs</a></p>
+    <p>field &middot; MIT License &middot; <a href="https://github.com/grainulator/field">GitHub</a> &middot; <a href="https://github.com/grainulator/field#readme">Docs</a></p>
   </div>
 </footer>
 
