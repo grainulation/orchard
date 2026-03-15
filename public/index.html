@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Orchard — Sprint Portfolio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230a0e1a'/><path d='M32,3.84 L18.18,3.84 C8.04,13.98 8.04,45.52 18.18,60.16 L32,60.16' fill='none' stroke='%23d4a574' stroke-width='1.28' stroke-linecap='round' stroke-linejoin='round'/><text x='32' y='33' text-anchor='middle' dominant-baseline='central' fill='%23d4a574' font-family='-apple-system,system-ui,sans-serif' font-size='24' font-weight='700'>O</text></svg>">
 <style>
 /* ── Tokens (inline, zero deps) ── */
 :root {
@@ -259,7 +260,7 @@ body {
   <!-- Header -->
   <div class="header">
     <div>
-      <h1><span>orchard</span> portfolio</h1>
+      <h1><svg width="112" height="56" viewBox="0 0 90 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M24,2.9 L13.6,2.9 C6.0,10.5 6.0,34.1 13.6,45.1 L24,45.1" stroke="#d4a574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="24" y="24" text-anchor="middle" dominant-baseline="central" fill="#d4a574" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="700">O</text><text x="31.0" y="24" dominant-baseline="central" fill="#e8ecf1" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="700">rchard</text></svg> portfolio</h1>
     </div>
     <div class="header-meta">
       <span class="conn-dot" id="connDot"></span>
@@ -476,10 +477,9 @@ body {
       document.getElementById('timeline').innerHTML =
         '<div class="empty"><p>No timeline data available</p></div>';
     } else {
-      const maxClaims = Math.max(...timeline.map(t => t.totalClaims || 1), 1);
       document.getElementById('timeline').innerHTML = timeline.map(t => {
         const phases = (t.phases || []);
-        const total = phases.reduce((sum, p) => sum + p.claimCount, 0) || 1;
+        const total = phases.reduce((sum, p) => sum + p.claimCount, 0);
 
         const bars = phases.map(p => {
           const phaseClass = 'phase-' + p.name.replace(/[^a-z]/g, '');
@@ -490,7 +490,7 @@ body {
           <div class="timeline-row">
             <span class="timeline-name" title="${esc(t.name)}">${esc(t.name)}</span>
             <div class="timeline-bar">${bars || '<div style="flex:1"></div>'}</div>
-            <span class="timeline-claims">${t.totalClaims || 0}</span>
+            <span class="timeline-claims">${total}</span>
           </div>`;
       }).join('');
     }
