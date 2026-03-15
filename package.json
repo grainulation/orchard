@@ -6,9 +6,15 @@
   "bin": {
     "orchard": "bin/orchard.js"
   },
+  "files": [
+    "bin/",
+    "lib/",
+    "public/"
+  ],
   "scripts": {
     "test": "node test/basic.test.js",
-    "start": "node bin/orchard.js status"
+    "start": "node bin/orchard.js status",
+    "serve": "node lib/server.js"
   },
   "keywords": [
     "research",

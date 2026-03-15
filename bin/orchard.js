@@ -11,6 +11,7 @@ const COMMANDS = {
   assign: 'Assign a person to a sprint',
   sync: 'Sync sprint states from their directories',
   dashboard: 'Generate unified HTML dashboard',
+  serve: 'Start the portfolio dashboard web server',
   help: 'Show this help message',
 };
 
@@ -42,6 +43,10 @@ function printHelp() {
     console.log(`    ${cmd.padEnd(12)} ${desc}`);
   }
   console.log('');
+  console.log('  Serve options:');
+  console.log('    --port 9097    Port for the web server (default: 9097)');
+  console.log('    --root <dir>   Root directory to scan for sprints');
+  console.log('');
   console.log('  Config: orchard.json in project root');
   console.log('');
 }
@@ -59,6 +64,25 @@ async function main() {
     console.error(`Unknown command: ${command}`);
     console.error(`Run "orchard help" to see available commands.`);
     process.exit(1);
+  }
+
+  // Serve command — start the HTTP server (ESM module)
+  if (command === 'serve') {
+    const serverPath = path.join(__dirname, '..', 'lib', 'server.js');
+    const { spawn } = require('node:child_process');
+
+    // Forward remaining args to the server
+    const serverArgs = args.slice(1);
+    const child = spawn(process.execPath, [serverPath, ...serverArgs], {
+      stdio: 'inherit',
+    });
+
+    child.on('close', (code) => process.exit(code ?? 0));
+    child.on('error', (err) => {
+      console.error(`Failed to start server: ${err.message}`);
+      process.exit(1);
+    });
+    return;
   }
 
   if (command === 'init') {
@@ -102,13 +126,13 @@ async function main() {
       break;
     }
     case 'assign': {
-      const { assignSprint } = require('../lib/assignments.js');
       const sprintPath = args[1];
       const person = args[2];
       if (!sprintPath || !person) {
         console.error('Usage: orchard assign <sprint-path> <person>');
         process.exit(1);
       }
+      const { assignSprint } = require('../lib/assignments.js');
       assignSprint(config, root, sprintPath, person);
       break;
     }
