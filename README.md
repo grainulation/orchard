@@ -2,12 +2,12 @@
 
 > 12 sprints running. One command to see them all.
 
-**Orchard** is the multi-sprint orchestrator for [Wheat](https://github.com/grainulator/wheat) research sprints. It coordinates parallel research across teams with dependency tracking, conflict detection, and unified dashboards.
+**Orchard** is the multi-sprint orchestrator for [Wheat](https://github.com/grainulation/wheat) research sprints. It coordinates parallel research across teams with dependency tracking, conflict detection, and unified dashboards.
 
 ## Install
 
 ```bash
-npx @grainulator/orchard status
+npx @grainulation/orchard status
 ```
 
 ## What it does
