@@ -116,7 +116,8 @@ body {
   border-radius: var(--radius); padding: 16px;
   transition: border-color var(--transition-base);
 }
-.sprint-card:hover { border-color: var(--accent-border); }
+.sprint-card:hover, .sprint-card:focus-visible { border-color: var(--accent-border); outline: none; }
+.sprint-card:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
 .sprint-card.conflict { border-color: rgba(248,113,113,0.4); }
 .sprint-card-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -178,6 +179,20 @@ body {
 }
 .dep-type-explicit { background: var(--accent-dim); color: var(--accent); }
 .dep-type-reference { background: rgba(148,163,184,0.12); color: var(--fg3); }
+
+/* ── Dep graph SVG ── */
+.dep-graph {
+  margin-bottom: 16px; overflow-x: auto;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); min-height: 0;
+}
+.dep-graph:empty { display: none; }
+.dep-graph svg { display: block; width: 100%; }
+.dep-graph .node rect { fill: var(--bg3); stroke: var(--border); stroke-width: 1; rx: 4; }
+.dep-graph .node text { fill: var(--fg); font-size: 11px; font-family: var(--font-sans); }
+.dep-graph .edge { stroke: var(--fg3); stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+.dep-graph .edge.explicit { stroke: var(--accent); }
+.dep-graph .edge.reference { stroke: var(--fg3); stroke-dasharray: 4 3; }
 
 /* ── Conflict cards ── */
 .conflict-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
@@ -274,7 +289,7 @@ body {
   <!-- Header -->
   <header class="header" role="banner">
     <div>
-      <h1><svg width="89" height="44" viewBox="0 0 90 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M22,6 L15.5,6 C9.5,11.5 9.5,26.5 15.5,32 L22,32" stroke="#d4a574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="23" y="19" text-anchor="middle" dominant-baseline="central" fill="#d4a574" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="800">O</text><text x="29.5" y="19" dominant-baseline="central" fill="#e8ecf1" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="800">rchard</text></svg> portfolio</h1>
+      <h1><svg width="89" height="44" viewBox="0 0 90 38" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle"><path d="M22,8 L16,8 C10.5,12.5 10.5,25.5 16,30 L22,30" stroke="#d4a574" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><text x="23" y="19" text-anchor="middle" dominant-baseline="central" fill="#d4a574" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="800">O</text><text x="29.5" y="19" dominant-baseline="central" fill="#e8ecf1" font-family="-apple-system,system-ui,sans-serif" font-size="18.2" font-weight="800">rchard</text></svg> portfolio</h1>
     </div>
     <div class="header-meta">
       <span class="conn-dot" id="connDot"></span>
@@ -296,10 +311,11 @@ body {
   <div class="conflict-list" id="conflictList"></div>
 
   <!-- Dependencies -->
-  <div class="section-title dep-section">Dependencies</div>
+  <div class="section-title dep-section">Dependencies <span class="count" id="depCount">0</span></div>
+  <div id="depGraph" class="dep-graph" role="img" aria-label="Sprint dependency graph"></div>
   <div style="margin-bottom:32px; overflow-x:auto;">
-    <table class="dep-table" id="depTable">
-      <thead><tr><th>From</th><th>To</th><th>Type</th></tr></thead>
+    <table class="dep-table" id="depTable" role="table">
+      <thead><tr><th scope="col">From</th><th scope="col">To</th><th scope="col">Type</th></tr></thead>
       <tbody id="depBody"></tbody>
     </table>
   </div>
@@ -456,7 +472,7 @@ body {
         }).join('');
 
         return `
-          <div class="sprint-card${hasConflict ? ' conflict' : ''}">
+          <div class="sprint-card${hasConflict ? ' conflict' : ''}" tabindex="0" role="article" aria-label="${esc(s.name)} sprint">
             <div class="sprint-card-header">
               <span class="sprint-name">${esc(s.name)}</span>
               <span class="sprint-badge ${badgeClass}">${esc(s.status || 'unknown')}</span>
@@ -499,7 +515,10 @@ body {
       `).join('');
     }
 
-    // Dependencies table
+    // Dependencies
+    document.getElementById('depCount').textContent = deps.edges.length;
+    renderDepGraph(deps);
+
     if (deps.edges.length === 0) {
       document.getElementById('depBody').innerHTML =
         '<tr><td colspan="3" style="color:var(--fg3); text-align:center; padding:16px;">' + t('No dependencies detected') + '</td></tr>';
@@ -545,10 +564,128 @@ body {
     return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
 
+  // ── SVG dependency graph ──
+  function renderDepGraph(deps) {
+    const container = document.getElementById('depGraph');
+    if (!deps.nodes.length || !deps.edges.length) { container.innerHTML = ''; return; }
+
+    const nameMap = {};
+    for (const n of deps.nodes) nameMap[n.id] = n.name;
+
+    // Collect unique node names involved in edges
+    const involved = new Set();
+    for (const e of deps.edges) {
+      involved.add(e.from);
+      involved.add(e.to);
+    }
+    const nodeList = deps.nodes.filter(n => involved.has(n.id));
+    if (nodeList.length === 0) { container.innerHTML = ''; return; }
+
+    const nodeW = 120, nodeH = 32, padX = 24, padY = 20, gapX = 40, gapY = 16;
+
+    // Simple layered layout: nodes with no incoming edges go first
+    const incoming = new Map();
+    for (const n of nodeList) incoming.set(n.id, 0);
+    for (const e of deps.edges) {
+      if (incoming.has(e.to)) incoming.set(e.to, incoming.get(e.to) + 1);
+    }
+
+    // Topological layers (BFS)
+    const layers = [];
+    const placed = new Set();
+    let frontier = nodeList.filter(n => incoming.get(n.id) === 0).map(n => n.id);
+    if (frontier.length === 0) frontier = [nodeList[0].id]; // cycle fallback
+
+    while (frontier.length > 0) {
+      layers.push(frontier);
+      for (const id of frontier) placed.add(id);
+      const next = [];
+      for (const e of deps.edges) {
+        if (placed.has(e.from) && !placed.has(e.to) && !next.includes(e.to)) {
+          next.push(e.to);
+        }
+      }
+      if (next.length === 0) {
+        // Place any remaining unplaced nodes
+        const remaining = nodeList.filter(n => !placed.has(n.id)).map(n => n.id);
+        if (remaining.length > 0) { layers.push(remaining); for (const id of remaining) placed.add(id); }
+        break;
+      }
+      frontier = next;
+    }
+
+    // Compute positions
+    const pos = {};
+    const maxPerLayer = Math.max(...layers.map(l => l.length));
+    const svgW = layers.length * (nodeW + gapX) + padX * 2;
+    const svgH = maxPerLayer * (nodeH + gapY) + padY * 2;
+
+    for (let li = 0; li < layers.length; li++) {
+      const layer = layers[li];
+      const layerH = layer.length * (nodeH + gapY) - gapY;
+      const startY = (svgH - layerH) / 2;
+      for (let ni = 0; ni < layer.length; ni++) {
+        pos[layer[ni]] = {
+          x: padX + li * (nodeW + gapX),
+          y: startY + ni * (nodeH + gapY),
+        };
+      }
+    }
+
+    // Build SVG
+    let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${svgW} ${svgH}" style="min-height:${Math.min(svgH, 200)}px; max-height:240px">`;
+    svg += '<defs><marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--fg3)"/></marker>';
+    svg += '<marker id="arrowhead-accent" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="var(--accent)"/></marker></defs>';
+
+    // Edges
+    for (const e of deps.edges) {
+      const from = pos[e.from];
+      const to = pos[e.to];
+      if (!from || !to) continue;
+      const x1 = from.x + nodeW;
+      const y1 = from.y + nodeH / 2;
+      const x2 = to.x;
+      const y2 = to.y + nodeH / 2;
+      const cls = e.type === 'explicit' ? 'edge explicit' : 'edge reference';
+      const marker = e.type === 'explicit' ? 'url(#arrowhead-accent)' : 'url(#arrowhead)';
+      const mx = (x1 + x2) / 2;
+      svg += `<path class="${cls}" d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" marker-end="${marker}"/>`;
+    }
+
+    // Nodes
+    for (const n of nodeList) {
+      const p = pos[n.id];
+      if (!p) continue;
+      const statusColor =
+        n.status === 'active' ? 'var(--green)' :
+        n.status === 'compiled' || n.status === 'done' ? 'var(--blue)' :
+        n.status === 'blocked' ? 'var(--red)' : 'var(--fg3)';
+      svg += `<g class="node"><rect x="${p.x}" y="${p.y}" width="${nodeW}" height="${nodeH}" style="stroke:${statusColor}"/>`;
+      svg += `<text x="${p.x + nodeW / 2}" y="${p.y + nodeH / 2 + 1}" text-anchor="middle" dominant-baseline="central">${esc(n.name.length > 14 ? n.name.substring(0, 13) + '..' : n.name)}</text></g>`;
+    }
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+  }
+
   // ── Keyboard navigation ──
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      document.activeElement?.blur();
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    // J/K to navigate between sprint cards
+    if ((e.key === 'j' || e.key === 'k') && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      const target = e.target;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return;
+      const cards = [...document.querySelectorAll('.sprint-card')];
+      if (cards.length === 0) return;
+      const idx = cards.indexOf(document.activeElement);
+      let next;
+      if (e.key === 'j') next = idx < 0 ? 0 : Math.min(idx + 1, cards.length - 1);
+      else next = idx < 0 ? cards.length - 1 : Math.max(idx - 1, 0);
+      cards[next].focus();
+      e.preventDefault();
     }
   });
 
