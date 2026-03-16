@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-tool="orchard">
+<html lang="en" dir="auto" data-tool="orchard">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -70,7 +70,7 @@ body {
 .conn-dot.disconnected { background: var(--red); }
 .reconnect-banner { position:fixed;top:0;left:0;right:0;z-index:9999;padding:8px 16px;background:#92400e;color:#fbbf24;font-size:12px;text-align:center;transform:translateY(-100%);transition:transform .3s;font-family:system-ui,sans-serif }
 .reconnect-banner.visible { transform:translateY(0) }
-.reconnect-banner button { background:none;border:1px solid #fbbf24;color:#fbbf24;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;margin-left:8px }
+.reconnect-banner button { background:none;border:1px solid #fbbf24;color:#fbbf24;padding:2px 10px;border-radius:4px;cursor:pointer;font-size:11px;margin-inline-start:8px }
 .header-meta .scan-btn {
   background: var(--bg3); border: 1px solid var(--border); color: var(--fg2);
   padding: 4px 12px; border-radius: var(--radius-sm); cursor: pointer;
@@ -165,7 +165,7 @@ body {
   width: 100%; border-collapse: collapse;
 }
 .dep-table th {
-  text-align: left; font-size: 10px; color: var(--fg3);
+  text-align: start; font-size: 10px; color: var(--fg3);
   text-transform: uppercase; padding: 6px 12px;
   border-bottom: 1px solid var(--border);
 }
@@ -184,9 +184,9 @@ body {
 .conflict-card {
   background: var(--bg2); border: 1px solid rgba(248,113,113,0.3);
   border-radius: var(--radius); padding: 14px;
-  border-left: 3px solid var(--red);
+  border-inline-start: 3px solid var(--red);
 }
-.conflict-card.medium { border-left-color: var(--orange); border-color: rgba(251,146,60,0.3); }
+.conflict-card.medium { border-inline-start-color: var(--orange); border-color: rgba(251,146,60,0.3); }
 .conflict-header {
   display: flex; justify-content: space-between; align-items: center;
   margin-bottom: 8px;
@@ -234,7 +234,7 @@ body {
 .phase-calibrate { background: var(--green); }
 .phase-other     { background: var(--bg4); }
 .timeline-claims {
-  min-width: 50px; text-align: right; font-size: 11px;
+  min-width: 50px; text-align: end; font-size: 11px;
   font-family: var(--font-mono); color: var(--fg3);
 }
 
@@ -250,7 +250,7 @@ body {
 }
 
 /* ── A11y ── */
-.skip-link{position:absolute;top:-40px;left:0;background:var(--accent);color:#000;padding:8px 16px;z-index:10000;font-size:14px;font-weight:600;transition:top .2s}
+.skip-link{position:absolute;top:-40px;inset-inline-start:0;background:var(--accent);color:#000;padding:8px 16px;z-index:10000;font-size:14px;font-weight:600;transition:top .2s}
 .skip-link:focus{top:0}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 @media (prefers-reduced-motion: reduce) {
@@ -314,6 +314,10 @@ body {
 (function() {
   'use strict';
 
+  // ── i18n passthrough ──
+  const t = (s, v) => v ? s.replace(/\{(\w+)\}/g, (_, k) => v[k] ?? k) : s;
+  const _dtf = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+
   const PHASE_COLORS = {
     define: 'var(--fg3)', research: 'var(--blue)', prototype: 'var(--purple)',
     evaluate: 'var(--cyan)', challenge: 'var(--orange)', witness: '#14b8a6',
@@ -333,11 +337,11 @@ body {
   function showBanner(count) {
     const b = document.getElementById('reconnectBanner');
     if (count > 5) {
-      b.innerHTML = 'Connection lost. <button onclick="retryCount=0;connect()">Retry now</button>';
+      b.innerHTML = t('Connection lost.') + ' <button onclick="retryCount=0;connect()">' + t('Retry now') + '</button>';
     } else if (count > 1) {
-      b.textContent = 'Reconnecting (attempt ' + count + ')...';
+      b.textContent = t('Reconnecting (attempt {count})...', { count });
     } else {
-      b.textContent = 'Reconnecting...';
+      b.textContent = t('Reconnecting...');
     }
     b.classList.add('visible');
   }
@@ -378,12 +382,12 @@ body {
   // ── Rescan ──
   document.getElementById('scanBtn').addEventListener('click', async () => {
     const btn = document.getElementById('scanBtn');
-    btn.textContent = 'Scanning...';
+    btn.textContent = t('Scanning...');
     btn.disabled = true;
     try {
       await fetch('/api/scan', { method: 'POST' });
     } catch { /* ignore */ }
-    btn.textContent = 'Rescan';
+    btn.textContent = t('Rescan');
     btn.disabled = false;
   });
 
@@ -394,7 +398,7 @@ body {
     // Last scan
     if (state.lastScan) {
       const d = new Date(state.lastScan);
-      document.getElementById('lastScan').textContent = d.toLocaleTimeString();
+      document.getElementById('lastScan').textContent = _dtf.format(d);
     }
 
     const portfolio = state.portfolio || [];
@@ -408,12 +412,12 @@ body {
     const totalClaims = portfolio.reduce((sum, s) => sum + (s.claimCount || 0), 0);
 
     document.getElementById('stats').innerHTML = [
-      { value: portfolio.length, label: 'Sprints', cls: 'stat-accent' },
-      { value: active, label: 'Active', cls: 'stat-green' },
-      { value: compiled, label: 'Compiled', cls: 'stat-blue' },
-      { value: totalClaims, label: 'Total Claims', cls: '' },
-      { value: conflicts.length, label: 'Conflicts', cls: conflicts.length > 0 ? 'stat-red' : '' },
-      { value: deps.edges.length, label: 'Dep Links', cls: '' },
+      { value: portfolio.length, label: t('Sprints'), cls: 'stat-accent' },
+      { value: active, label: t('Active'), cls: 'stat-green' },
+      { value: compiled, label: t('Compiled'), cls: 'stat-blue' },
+      { value: totalClaims, label: t('Total Claims'), cls: '' },
+      { value: conflicts.length, label: t('Conflicts'), cls: conflicts.length > 0 ? 'stat-red' : '' },
+      { value: deps.edges.length, label: t('Dep Links'), cls: '' },
     ].map(s => `
       <div class="stat ${s.cls}">
         <div class="stat-value">${s.value}</div>
@@ -428,8 +432,8 @@ body {
     if (portfolio.length === 0) {
       document.getElementById('sprintGrid').innerHTML = `
         <div class="empty">
-          <h3>No sprints found</h3>
-          <p>Create a sprint directory with <code>claims.json</code> or add sprints to <code>orchard.json</code></p>
+          <h3>${t('No sprints found')}</h3>
+          <p>${t('Create a sprint directory with claims.json or add sprints to orchard.json')}</p>
         </div>`;
     } else {
       document.getElementById('sprintGrid').innerHTML = portfolio.map(s => {
@@ -445,10 +449,10 @@ body {
         // Claim type bar
         const types = Object.entries(s.claimTypes || {});
         const total = types.reduce((sum, [,v]) => sum + v, 0) || 1;
-        const barSegs = types.map(([t, v]) => {
+        const barSegs = types.map(([tp, v]) => {
           const pct = (v / total * 100).toFixed(1);
-          const color = CLAIM_TYPE_COLORS[t] || 'var(--bg4)';
-          return `<div class="claim-bar-seg" style="flex:${v}; background:${color}" title="${t}: ${v}"></div>`;
+          const color = CLAIM_TYPE_COLORS[tp] || 'var(--bg4)';
+          return `<div class="claim-bar-seg" style="flex:${v}; background:${color}" title="${tp}: ${v}"></div>`;
         }).join('');
 
         return `
@@ -473,7 +477,7 @@ body {
     document.getElementById('conflictCount').textContent = conflicts.length;
     if (conflicts.length === 0) {
       document.getElementById('conflictList').innerHTML =
-        '<div class="empty"><p>No cross-sprint conflicts detected</p></div>';
+        '<div class="empty"><p>' + t('No cross-sprint conflicts detected') + '</p></div>';
     } else {
       document.getElementById('conflictList').innerHTML = conflicts.map(c => `
         <div class="conflict-card${c.severity === 'medium' ? ' medium' : ''}">
@@ -498,7 +502,7 @@ body {
     // Dependencies table
     if (deps.edges.length === 0) {
       document.getElementById('depBody').innerHTML =
-        '<tr><td colspan="3" style="color:var(--fg3); text-align:center; padding:16px;">No dependencies detected</td></tr>';
+        '<tr><td colspan="3" style="color:var(--fg3); text-align:center; padding:16px;">' + t('No dependencies detected') + '</td></tr>';
     } else {
       document.getElementById('depBody').innerHTML = deps.edges.map(e => {
         const fromName = e.from.split('/').pop();
@@ -516,10 +520,10 @@ body {
     // Timeline
     if (timeline.length === 0) {
       document.getElementById('timeline').innerHTML =
-        '<div class="empty"><p>No timeline data available</p></div>';
+        '<div class="empty"><p>' + t('No timeline data available') + '</p></div>';
     } else {
-      document.getElementById('timeline').innerHTML = timeline.map(t => {
-        const phases = (t.phases || []);
+      document.getElementById('timeline').innerHTML = timeline.map(tl => {
+        const phases = (tl.phases || []);
         const total = phases.reduce((sum, p) => sum + p.claimCount, 0);
 
         const bars = phases.map(p => {
@@ -529,7 +533,7 @@ body {
 
         return `
           <div class="timeline-row">
-            <span class="timeline-name" title="${esc(t.name)}">${esc(t.name)}</span>
+            <span class="timeline-name" title="${esc(tl.name)}">${esc(tl.name)}</span>
             <div class="timeline-bar">${bars || '<div style="flex:1"></div>'}</div>
             <span class="timeline-claims">${total}</span>
           </div>`;
