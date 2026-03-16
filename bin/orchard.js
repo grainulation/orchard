@@ -4,6 +4,13 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
+const verbose = process.argv.includes('--verbose') || process.argv.includes('-v');
+function vlog(...a) {
+  if (!verbose) return;
+  const ts = new Date().toISOString();
+  process.stderr.write(`[${ts}] orchard: ${a.join(' ')}\n`);
+}
+
 const COMMANDS = {
   init: 'Initialize orchard.json in the current directory',
   plan: 'Show sprint dependency graph as ASCII',
@@ -54,6 +61,7 @@ function printHelp() {
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0] || 'help';
+  vlog('startup', `command=${command}`, `cwd=${process.cwd()}`);
 
   if (command === 'help' || command === '--help' || command === '-h') {
     printHelp();
@@ -61,7 +69,7 @@ async function main() {
   }
 
   if (!COMMANDS[command]) {
-    console.error(`Unknown command: ${command}`);
+    console.error(`orchard: unknown command: ${command}`);
     console.error(`Run "orchard help" to see available commands.`);
     process.exit(1);
   }
@@ -79,7 +87,7 @@ async function main() {
 
     child.on('close', (code) => process.exit(code ?? 0));
     child.on('error', (err) => {
-      console.error(`Failed to start server: ${err.message}`);
+      console.error(`orchard: failed to start server: ${err.message}`);
       process.exit(1);
     });
     return;
@@ -94,7 +102,7 @@ async function main() {
     } catch (_) { /* ignore parse errors for init */ }
     const configPath = path.join(rootDir, 'orchard.json');
     if (fs.existsSync(configPath)) {
-      console.error('orchard.json already exists');
+      console.error('orchard: orchard.json already exists');
       process.exit(1);
     }
     const defaultConfig = { sprints: [], settings: { sync_interval: 'manual' } };
@@ -105,7 +113,7 @@ async function main() {
 
   const root = findOrchardRoot();
   if (!root && command !== 'help') {
-    console.error('No orchard.json found. Run from a directory with orchard.json or a subdirectory.');
+    console.error('orchard: no orchard.json found. Run from a directory with orchard.json or a subdirectory.');
     console.error('');
     console.error('Create one:');
     console.error('  { "sprints": [] }');
@@ -129,7 +137,7 @@ async function main() {
       const sprintPath = args[1];
       const person = args[2];
       if (!sprintPath || !person) {
-        console.error('Usage: orchard assign <sprint-path> <person>');
+        console.error('orchard: usage: orchard assign <sprint-path> <person>');
         process.exit(1);
       }
       const { assignSprint } = require('../lib/assignments.js');
@@ -151,6 +159,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err.message);
+  console.error(`orchard: ${err.message}`);
   process.exit(1);
 });
