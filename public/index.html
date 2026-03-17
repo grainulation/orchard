@@ -402,10 +402,12 @@ body {
       retryCount = 0;
       hideBanner();
       document.getElementById('connDot').className = 'conn-dot';
+      if (window._grainSetState) window._grainSetState('idle');
     };
 
     sse.onerror = () => {
       document.getElementById('connDot').className = 'conn-dot disconnected';
+      if (window._grainSetState) window._grainSetState('orbit');
       sse.close();
       const delay = Math.min(30000, 1000 * Math.pow(2, retryCount)) + Math.random() * 1000;
       retryCount++;
