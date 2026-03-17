@@ -19,6 +19,7 @@ const COMMANDS = {
   sync: 'Sync sprint states from their directories',
   dashboard: 'Generate unified HTML dashboard',
   serve: 'Start the portfolio dashboard web server',
+  connect: 'Connect to a farmer instance',
   doctor: 'Check health of orchard setup',
   help: 'Show this help message',
 };
@@ -54,6 +55,9 @@ function printHelp() {
   console.log('  Serve options:');
   console.log('    --port 9097    Port for the web server (default: 9097)');
   console.log('    --root <dir>   Root directory to scan for sprints');
+  console.log('');
+  console.log('  Connect:');
+  console.log('    orchard connect farmer --url http://localhost:9090');
   console.log('');
   console.log('  Config: orchard.json in project root');
   console.log('');
@@ -91,6 +95,20 @@ async function main() {
       console.error(`orchard: failed to start server: ${err.message}`);
       process.exit(1);
     });
+    process.on('SIGTERM', () => child.kill('SIGTERM'));
+    process.on('SIGINT', () => child.kill('SIGINT'));
+    return;
+  }
+
+  if (command === 'connect') {
+    const { connect: farmerConnect } = require('../lib/farmer.js');
+    const connectArgs = process.argv.slice(process.argv.indexOf('connect') + 1);
+    const rootIdx = connectArgs.indexOf('--root');
+    let targetDir = process.cwd();
+    if (rootIdx !== -1 && connectArgs[rootIdx + 1]) {
+      targetDir = path.resolve(connectArgs[rootIdx + 1]);
+    }
+    await farmerConnect(targetDir, connectArgs);
     return;
   }
 
