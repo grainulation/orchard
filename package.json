@@ -1,8 +1,17 @@
 {
   "name": "@grainulation/orchard",
   "version": "1.0.0",
+  "type": "module",
   "description": "Multi-sprint research orchestrator — coordinate parallel research across teams",
   "main": "lib/planner.js",
+  "exports": {
+    ".": "./lib/planner.js",
+    "./server": "./lib/server.js",
+    "./sync": "./lib/sync.js",
+    "./tracker": "./lib/tracker.js",
+    "./doctor": "./lib/doctor.js",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "orchard": "bin/orchard.js"
   },
