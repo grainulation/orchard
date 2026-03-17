@@ -1,28 +1,26 @@
 # @grainulation/orchard
 
-> 12 sprints running. One command to see them all.
+[![npm version](https://img.shields.io/npm/v/@grainulation/orchard)](https://www.npmjs.com/package/@grainulation/orchard) [![npm downloads](https://img.shields.io/npm/dm/@grainulation/orchard)](https://www.npmjs.com/package/@grainulation/orchard) [![license](https://img.shields.io/npm/l/@grainulation/orchard)](https://github.com/grainulation/orchard/blob/main/LICENSE) [![node](https://img.shields.io/node/v/@grainulation/orchard)](https://nodejs.org) [![CI](https://github.com/grainulation/orchard/actions/workflows/ci.yml/badge.svg)](https://github.com/grainulation/orchard/actions)
 
-**Orchard** is the multi-sprint orchestrator for [Wheat](https://github.com/grainulation/wheat) research sprints. It coordinates parallel research across teams with dependency tracking, conflict detection, and unified dashboards.
+**Multi-sprint orchestration and dependency tracking.**
+
+12 sprints running. One command to see them all. Orchard coordinates parallel research across teams with dependency graphs, conflict detection, and unified dashboards.
 
 ## Install
+
+```bash
+npm install -g @grainulation/orchard
+```
+
+Or use directly:
 
 ```bash
 npx @grainulation/orchard status
 ```
 
-## What it does
-
-- **Run multiple wheat sprints in parallel** with dependency tracking
-- **Sprint dependency graphs** -- "sprint B needs sprint A's results first"
-- **Team assignment** -- who's running which sprint
-- **Resource allocation** -- distribute research bandwidth
-- **Cross-sprint conflict detection** -- when two sprints reach opposing conclusions
-- **Unified status dashboard** across all active sprints
-- **Sprint scheduling and deadline tracking**
-
 ## Quick start
 
-Create a `orchard.json` in your project root:
+Create `orchard.json` in your project root:
 
 ```json
 {
@@ -50,68 +48,56 @@ Create a `orchard.json` in your project root:
 Then:
 
 ```bash
-# See the dependency graph
-orchard plan
-
-# Check status of all sprints
-orchard status
-
-# Assign someone to a sprint
-orchard assign ./sprints/data-migration carol
-
-# Sync status from sprint directories
-orchard sync
-
-# Generate HTML dashboard
-orchard dashboard
+orchard plan        # Show the dependency graph
+orchard status      # Check status of all sprints
+orchard sync        # Sync status from sprint directories
+orchard dashboard   # Generate unified HTML dashboard
 ```
 
-## Commands
+## What it does
+
+- **Sprint dependency graphs** -- "sprint B needs sprint A's results first"
+- **Cross-sprint conflict detection** -- when two sprints reach opposing conclusions
+- **Team assignment** -- who's running which sprint
+- **Unified status dashboard** across all active sprints
+- **Sprint scheduling and deadline tracking**
+- **Topological sort** -- determines execution order, flags cycles
+
+## CLI
 
 | Command | Description |
 |---------|-------------|
-| `orchard plan` | Show sprint dependency graph as ASCII |
+| `orchard plan` | Show sprint dependency graph |
 | `orchard status` | Show status of all tracked sprints |
 | `orchard assign <path> <person>` | Assign a person to a sprint |
-| `orchard sync` | Sync sprint states from their directories |
+| `orchard sync` | Sync sprint states from directories |
 | `orchard dashboard [outfile]` | Generate unified HTML dashboard |
-| `orchard init` | Initialize orchard.json in the current directory |
+| `orchard init` | Initialize orchard.json |
 | `orchard serve` | Start the portfolio dashboard web server |
-| `orchard help` | Show help |
 
-## orchard.json schema
-
-```typescript
-{
-  sprints: Array<{
-    path: string;           // Relative path to sprint directory
-    question: string;       // The research question
-    depends_on: string[];   // Paths of prerequisite sprints
-    assigned_to: string;    // Person responsible
-    deadline: string;       // ISO date string
-    status: string;         // active | done | blocked | not-started
-  }>
-}
-```
-
-## How it works
-
-Orchard reads `orchard.json` for the sprint graph, then scans each sprint directory for `claims.json` and `compilation.json` to determine actual state. It detects conflicts by comparing claims across sprints that share tags.
-
-### Conflict detection
+## Conflict detection
 
 Orchard flags two types of cross-sprint conflicts:
 
-1. **Opposing recommendations** -- two sprints make recommendations on the same topic that may contradict
+1. **Opposing recommendations** -- two sprints make recommendations on the same topic that contradict
 2. **Constraint-recommendation tension** -- one sprint's constraints conflict with another's recommendations
-
-### Dependency tracking
-
-Sprints can declare dependencies. Orchard uses topological sorting to determine execution order and flags cycles. The `plan` command renders this as ASCII art.
 
 ## Zero dependencies
 
-Orchard uses only Node.js built-in modules. No npm install required.
+Node built-in modules only.
+
+## Part of the grainulation ecosystem
+
+| Tool | Role |
+|------|------|
+| [wheat](https://github.com/grainulation/wheat) | Research engine -- grow structured evidence |
+| [farmer](https://github.com/grainulation/farmer) | Permission dashboard -- approve AI actions in real time |
+| [barn](https://github.com/grainulation/barn) | Shared tools -- templates, validators, sprint detection |
+| [mill](https://github.com/grainulation/mill) | Format conversion -- export to PDF, CSV, slides, 24 formats |
+| [silo](https://github.com/grainulation/silo) | Knowledge storage -- reusable claim libraries and packs |
+| [harvest](https://github.com/grainulation/harvest) | Analytics -- cross-sprint patterns and prediction scoring |
+| **orchard** | Orchestration -- multi-sprint coordination and dependencies |
+| [grainulation](https://github.com/grainulation/grainulation) | Unified CLI -- single entry point to the ecosystem |
 
 ## License
 
