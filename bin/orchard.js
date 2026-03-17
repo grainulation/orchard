@@ -19,6 +19,7 @@ const COMMANDS = {
   sync: 'Sync sprint states from their directories',
   dashboard: 'Generate unified HTML dashboard',
   serve: 'Start the portfolio dashboard web server',
+  doctor: 'Check health of orchard setup',
   help: 'Show this help message',
 };
 
@@ -112,7 +113,7 @@ async function main() {
   }
 
   const root = findOrchardRoot();
-  if (!root && command !== 'help') {
+  if (!root && command !== 'help' && command !== 'doctor') {
     console.error('orchard: no orchard.json found. Run from a directory with orchard.json or a subdirectory.');
     console.error('');
     console.error('Create one:');
@@ -168,6 +169,17 @@ async function main() {
       const { generateDashboard } = require('../lib/dashboard.js');
       const outPath = args[1] || path.join(root, 'orchard-dashboard.html');
       generateDashboard(config, root, outPath);
+      break;
+    }
+    case 'doctor': {
+      const { runChecks, printReport } = require('../lib/doctor.js');
+      const result = runChecks(root || process.cwd());
+      if (jsonMode) {
+        console.log(JSON.stringify(result, null, 2));
+      } else {
+        printReport(result);
+      }
+      if (!result.ok) process.exit(1);
       break;
     }
   }
