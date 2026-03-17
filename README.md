@@ -1,8 +1,12 @@
-# @grainulation/orchard
+<p align="center">
+  <img src="site/wordmark.svg" alt="Orchard" width="400">
+</p>
 
-[![npm version](https://img.shields.io/npm/v/@grainulation/orchard)](https://www.npmjs.com/package/@grainulation/orchard) [![npm downloads](https://img.shields.io/npm/dm/@grainulation/orchard)](https://www.npmjs.com/package/@grainulation/orchard) [![license](https://img.shields.io/npm/l/@grainulation/orchard)](https://github.com/grainulation/orchard/blob/main/LICENSE) [![node](https://img.shields.io/node/v/@grainulation/orchard)](https://nodejs.org) [![CI](https://github.com/grainulation/orchard/actions/workflows/ci.yml/badge.svg)](https://github.com/grainulation/orchard/actions)
+<p align="center">
+  <a href="https://www.npmjs.com/package/@grainulation/orchard"><img src="https://img.shields.io/npm/v/@grainulation/orchard" alt="npm version"></a> <a href="https://www.npmjs.com/package/@grainulation/orchard"><img src="https://img.shields.io/npm/dm/@grainulation/orchard" alt="npm downloads"></a> <a href="https://github.com/grainulation/orchard/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@grainulation/orchard" alt="license"></a> <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@grainulation/orchard" alt="node"></a> <a href="https://github.com/grainulation/orchard/actions"><img src="https://github.com/grainulation/orchard/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+</p>
 
-**Multi-sprint orchestration and dependency tracking.**
+<p align="center"><strong>Multi-sprint orchestration and dependency tracking.</strong></p>
 
 12 sprints running. One command to see them all. Orchard coordinates parallel research across teams with dependency graphs, conflict detection, and unified dashboards.
 
