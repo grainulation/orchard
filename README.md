@@ -1,4 +1,4 @@
-# orchard
+# @grainulation/orchard
 
 > 12 sprints running. One command to see them all.
 
@@ -75,6 +75,8 @@ orchard dashboard
 | `orchard assign <path> <person>` | Assign a person to a sprint |
 | `orchard sync` | Sync sprint states from their directories |
 | `orchard dashboard [outfile]` | Generate unified HTML dashboard |
+| `orchard init` | Initialize orchard.json in the current directory |
+| `orchard serve` | Start the portfolio dashboard web server |
 | `orchard help` | Show help |
 
 ## orchard.json schema

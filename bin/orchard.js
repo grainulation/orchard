@@ -121,14 +121,29 @@ async function main() {
   }
 
   const config = root ? loadConfig(root) : { sprints: [] };
+  const jsonMode = args.includes('--json');
 
   switch (command) {
     case 'plan': {
+      if (jsonMode) {
+        const { buildGraph, topoSort, detectCycles } = require('../lib/planner.js');
+        const graph = buildGraph(config);
+        const order = topoSort(config);
+        const cycles = detectCycles(config);
+        console.log(JSON.stringify({ graph, order, cycles }, null, 2));
+        break;
+      }
       const { printDependencyGraph } = require('../lib/planner.js');
       printDependencyGraph(config, root);
       break;
     }
     case 'status': {
+      if (jsonMode) {
+        const { getStatusData } = require('../lib/tracker.js');
+        const data = getStatusData(config, root);
+        console.log(JSON.stringify(data, null, 2));
+        break;
+      }
       const { printStatus } = require('../lib/tracker.js');
       printStatus(config, root);
       break;
