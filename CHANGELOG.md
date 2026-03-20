@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 -- 2026-03-20
+
+### Changes
+
+- `orchard serve` now serves the web app dashboard (`public/index.html`) instead of server-generated template HTML
+- Removed dead code: `SSE_SCRIPT` injection, `injectSSE()`, unused `buildHtml`/`loadDashboardSprints` imports
+
 ## 1.0.0 -- 2026-03-16
 
 Initial release.
