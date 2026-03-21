@@ -8,6 +8,9 @@
     "./server": "./lib/server.js",
     "./sync": "./lib/sync.js",
     "./tracker": "./lib/tracker.js",
+    "./conflicts": "./lib/conflicts.js",
+    "./hackathon": "./lib/hackathon.js",
+    "./decompose": "./lib/decompose.js",
     "./doctor": "./lib/doctor.js",
     "./package.json": "./package.json"
   },
