@@ -20,7 +20,9 @@
     "public/",
     "templates/",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "test": "node test/basic.test.js",
