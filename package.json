@@ -1,7 +1,7 @@
 {
   "name": "@grainulation/orchard",
   "version": "1.0.1",
-  "description": "Multi-sprint research orchestrator \u2014 coordinate parallel research across teams",
+  "description": "Multi-sprint research orchestrator — coordinate parallel research across teams",
   "main": "lib/planner.js",
   "exports": {
     ".": "./lib/planner.js",
@@ -50,6 +50,6 @@
   },
   "homepage": "https://orchard.grainulation.com",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }
