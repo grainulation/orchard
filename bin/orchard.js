@@ -13,10 +13,13 @@ function vlog(...a) {
 
 const COMMANDS = {
   init: 'Initialize orchard.json in the current directory',
-  plan: 'Show sprint dependency graph as ASCII',
+  plan: 'Show sprint dependency graph (--format mermaid|ascii, --mermaid)',
   status: 'Show status of all tracked sprints',
+  conflicts: 'Show cross-sprint conflicts (--severity critical|warning|info)',
   assign: 'Assign a person to a sprint',
   sync: 'Sync sprint states from their directories',
+  decompose: 'Auto-decompose a question into sub-sprints',
+  hackathon: 'Hackathon coordinator (init|team|status|end)',
   dashboard: 'Generate unified HTML dashboard',
   serve: 'Start the portfolio dashboard web server',
   connect: 'Connect to a farmer instance',
@@ -152,8 +155,20 @@ async function main() {
         console.log(JSON.stringify({ graph, order, cycles }, null, 2));
         break;
       }
-      const { printDependencyGraph } = require('../lib/planner.js');
-      printDependencyGraph(config, root);
+      const fmtIdx = args.indexOf('--format');
+      const planFormat = fmtIdx !== -1 && args[fmtIdx + 1] ? args[fmtIdx + 1] : null;
+      if (args.includes('--mermaid') || planFormat === 'mermaid') {
+        const { generateMermaid } = require('../lib/planner.js');
+        console.log(generateMermaid(config));
+        break;
+      }
+      if (planFormat === 'ascii' || !planFormat) {
+        const { printDependencyGraph } = require('../lib/planner.js');
+        printDependencyGraph(config, root);
+        break;
+      }
+      console.error(`orchard: unknown plan format: ${planFormat}. Supported: ascii, mermaid`);
+      process.exit(1);
       break;
     }
     case 'status': {
@@ -187,6 +202,87 @@ async function main() {
       const { generateDashboard } = require('../lib/dashboard.js');
       const outPath = args[1] || path.join(root, 'orchard-dashboard.html');
       generateDashboard(config, root, outPath);
+      break;
+    }
+    case 'conflicts': {
+      const { detectConflicts, filterBySeverity, printConflicts } = require('../lib/conflicts.js');
+      const sevIdx = args.indexOf('--severity');
+      const severity = sevIdx !== -1 && args[sevIdx + 1] ? args[sevIdx + 1] : 'info';
+      if (jsonMode) {
+        const all = detectConflicts(config, root);
+        const filtered = filterBySeverity(all, severity);
+        console.log(JSON.stringify({ conflicts: filtered, count: filtered.length }, null, 2));
+        break;
+      }
+      printConflicts(config, root, { severity });
+      break;
+    }
+    case 'decompose': {
+      const question = args.filter((a) => !a.startsWith('--')).slice(1).join(' ');
+      if (!question) {
+        console.error('orchard: usage: orchard decompose "<question>" [--apply] [--max <n>]');
+        process.exit(1);
+      }
+      const maxIdx = args.indexOf('--max');
+      const maxSprints = maxIdx !== -1 && args[maxIdx + 1] ? parseInt(args[maxIdx + 1], 10) : 5;
+      if (args.includes('--apply')) {
+        const { applyDecomposition } = require('../lib/decompose.js');
+        const sprints = applyDecomposition(root, question, { maxSprints });
+        console.log(`Created ${sprints.length} sub-sprints for: "${question}"`);
+        for (const s of sprints) {
+          console.log(`  ${s.path}`);
+        }
+      } else {
+        const { printDecomposition } = require('../lib/decompose.js');
+        printDecomposition(question, { maxSprints });
+      }
+      break;
+    }
+    case 'hackathon': {
+      const sub = args[1];
+      const hack = require('../lib/hackathon.js');
+      switch (sub) {
+        case 'init': {
+          const nameIdx = args.indexOf('--name');
+          const durIdx = args.indexOf('--duration');
+          const name = nameIdx !== -1 && args[nameIdx + 1] ? args[nameIdx + 1] : undefined;
+          const duration = durIdx !== -1 && args[durIdx + 1] ? parseInt(args[durIdx + 1], 10) : undefined;
+          const h = hack.initHackathon(root, { name, duration });
+          console.log(`Hackathon "${h.name}" started — ends at ${h.endTime}`);
+          break;
+        }
+        case 'team': {
+          const teamName = args[2];
+          const qIdx = args.indexOf('--question');
+          const question = qIdx !== -1 ? args.slice(qIdx + 1).join(' ') : undefined;
+          if (!teamName) {
+            console.error('orchard: usage: orchard hackathon team <name> [--question "..."]');
+            process.exit(1);
+          }
+          const result = hack.addTeam(root, teamName, question);
+          console.log(`Team "${result.teamName}" added — sprint: ${result.sprintPath}`);
+          break;
+        }
+        case 'end': {
+          const board = hack.endHackathon(root);
+          console.log('Hackathon ended! Final leaderboard:');
+          for (let i = 0; i < board.length; i++) {
+            const t = board[i];
+            console.log(`  ${i + 1}. ${t.team} — ${t.score}pts (${t.claimCount} claims)`);
+          }
+          break;
+        }
+        default: {
+          if (jsonMode) {
+            const timer = hack.timerStatus(root);
+            const board = hack.leaderboard(root);
+            console.log(JSON.stringify({ timer, leaderboard: board }, null, 2));
+          } else {
+            hack.printHackathon(root);
+          }
+          break;
+        }
+      }
       break;
     }
     case 'doctor': {
