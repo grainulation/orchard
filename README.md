@@ -69,15 +69,15 @@ orchard dashboard   # Generate unified HTML dashboard
 
 ## CLI
 
-| Command | Description |
-|---------|-------------|
-| `orchard plan` | Show sprint dependency graph |
-| `orchard status` | Show status of all tracked sprints |
-| `orchard assign <path> <person>` | Assign a person to a sprint |
-| `orchard sync` | Sync sprint states from directories |
-| `orchard dashboard [outfile]` | Generate unified HTML dashboard |
-| `orchard init` | Initialize orchard.json |
-| `orchard serve` | Start the portfolio dashboard web server |
+| Command                          | Description                              |
+| -------------------------------- | ---------------------------------------- |
+| `orchard plan`                   | Show sprint dependency graph             |
+| `orchard status`                 | Show status of all tracked sprints       |
+| `orchard assign <path> <person>` | Assign a person to a sprint              |
+| `orchard sync`                   | Sync sprint states from directories      |
+| `orchard dashboard [outfile]`    | Generate unified HTML dashboard          |
+| `orchard init`                   | Initialize orchard.json                  |
+| `orchard serve`                  | Start the portfolio dashboard web server |
 
 ## Conflict detection
 
@@ -92,16 +92,16 @@ Node built-in modules only.
 
 ## Part of the grainulation ecosystem
 
-| Tool | Role |
-|------|------|
-| [wheat](https://github.com/grainulation/wheat) | Research engine -- grow structured evidence |
-| [farmer](https://github.com/grainulation/farmer) | Permission dashboard -- approve AI actions in real time |
-| [barn](https://github.com/grainulation/barn) | Shared tools -- templates, validators, sprint detection |
-| [mill](https://github.com/grainulation/mill) | Format conversion -- export to PDF, CSV, slides, 24 formats |
-| [silo](https://github.com/grainulation/silo) | Knowledge storage -- reusable claim libraries and packs |
-| [harvest](https://github.com/grainulation/harvest) | Analytics -- cross-sprint patterns and prediction scoring |
-| **orchard** | Orchestration -- multi-sprint coordination and dependencies |
-| [grainulation](https://github.com/grainulation/grainulation) | Unified CLI -- single entry point to the ecosystem |
+| Tool                                                         | Role                                                        |
+| ------------------------------------------------------------ | ----------------------------------------------------------- |
+| [wheat](https://github.com/grainulation/wheat)               | Research engine -- grow structured evidence                 |
+| [farmer](https://github.com/grainulation/farmer)             | Permission dashboard -- approve AI actions in real time     |
+| [barn](https://github.com/grainulation/barn)                 | Shared tools -- templates, validators, sprint detection     |
+| [mill](https://github.com/grainulation/mill)                 | Format conversion -- export to PDF, CSV, slides, 24 formats |
+| [silo](https://github.com/grainulation/silo)                 | Knowledge storage -- reusable claim libraries and packs     |
+| [harvest](https://github.com/grainulation/harvest)           | Analytics -- cross-sprint patterns and prediction scoring   |
+| **orchard**                                                  | Orchestration -- multi-sprint coordination and dependencies |
+| [grainulation](https://github.com/grainulation/grainulation) | Unified CLI -- single entry point to the ecosystem          |
 
 ## License
 

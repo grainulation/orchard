@@ -15,16 +15,20 @@ No `npm install` needed -- orchard has zero dependencies.
 ## How to contribute
 
 ### Report a bug
+
 Open an issue with:
+
 - What you expected
 - What happened instead
 - Your Node version (`node --version`)
 - Steps to reproduce
 
 ### Suggest a feature
+
 Open an issue describing the use case, not just the solution. "I need X because Y" is more useful than "add X."
 
 ### Submit a PR
+
 1. Fork the repo
 2. Create a branch (`git checkout -b fix/description`)
 3. Make your changes
@@ -74,11 +78,13 @@ Tests use Node's built-in test runner. No test framework dependencies.
 ## Commit messages
 
 Follow the existing pattern:
+
 ```
 orchard: <what changed>
 ```
 
 Examples:
+
 ```
 orchard: add cross-sprint dependency graph
 orchard: fix timeline calculation for overlapping sprints

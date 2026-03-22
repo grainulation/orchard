@@ -11,9 +11,24 @@ The project manifest lives at the root of your multi-sprint workspace. It declar
   "schema_version": "1.0.0",
   "project": "platform-migration",
   "sprints": [
-    { "id": "database", "path": "./sprints/database/", "status": "active", "assignee": "alice" },
-    { "id": "auth", "path": "./sprints/auth/", "status": "active", "assignee": "bob" },
-    { "id": "frontend", "path": "./sprints/frontend/", "status": "blocked", "assignee": "carol" }
+    {
+      "id": "database",
+      "path": "./sprints/database/",
+      "status": "active",
+      "assignee": "alice"
+    },
+    {
+      "id": "auth",
+      "path": "./sprints/auth/",
+      "status": "active",
+      "assignee": "bob"
+    },
+    {
+      "id": "frontend",
+      "path": "./sprints/frontend/",
+      "status": "blocked",
+      "assignee": "carol"
+    }
   ],
   "dependencies": [
     { "from": "frontend", "to": "auth", "type": "blocks" },
@@ -25,12 +40,12 @@ The project manifest lives at the root of your multi-sprint workspace. It declar
 
 ### Sprint Fields
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `id` | string | Yes | Unique sprint identifier within the project |
-| `path` | string | Yes | Relative path to the sprint directory |
-| `status` | string | Yes | One of `active`, `blocked`, `complete`, `paused` |
-| `assignee` | string | No | Team member responsible for the sprint |
+| Field      | Type   | Required | Description                                      |
+| ---------- | ------ | -------- | ------------------------------------------------ |
+| `id`       | string | Yes      | Unique sprint identifier within the project      |
+| `path`     | string | Yes      | Relative path to the sprint directory            |
+| `status`   | string | Yes      | One of `active`, `blocked`, `complete`, `paused` |
+| `assignee` | string | No       | Team member responsible for the sprint           |
 
 ## Dependency Types
 
@@ -108,11 +123,11 @@ orchard assign database alice
 
 ## CLI Commands
 
-| Command | Description |
-|---|---|
-| `orchard init` | Create `orchard.json` from existing sprint directories |
-| `orchard status` | Show dependency graph and sprint statuses |
-| `orchard conflicts` | List cross-sprint claim conflicts |
-| `orchard merge` | Consolidate completed sprints |
-| `orchard assign <sprint> <person>` | Set sprint assignee |
-| `orchard notify <sprint> <message>` | Send a message to a sprint's assignee via farmer |
+| Command                             | Description                                            |
+| ----------------------------------- | ------------------------------------------------------ |
+| `orchard init`                      | Create `orchard.json` from existing sprint directories |
+| `orchard status`                    | Show dependency graph and sprint statuses              |
+| `orchard conflicts`                 | List cross-sprint claim conflicts                      |
+| `orchard merge`                     | Consolidate completed sprints                          |
+| `orchard assign <sprint> <person>`  | Set sprint assignee                                    |
+| `orchard notify <sprint> <message>` | Send a message to a sprint's assignee via farmer       |
