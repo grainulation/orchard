@@ -1,6 +1,6 @@
 {
   "name": "@grainulation/orchard",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Multi-sprint research orchestrator — coordinate parallel research across teams",
   "main": "lib/planner.js",
   "exports": {
@@ -41,7 +41,6 @@
   ],
   "author": "grainulation contributors",
   "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/grainulation/orchard.git"
