@@ -11,6 +11,7 @@
     "./conflicts": "./lib/conflicts.js",
     "./hackathon": "./lib/hackathon.js",
     "./decompose": "./lib/decompose.js",
+    "./emit": "./lib/emit.js",
     "./doctor": "./lib/doctor.js",
     "./package.json": "./package.json"
   },

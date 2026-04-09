@@ -24,6 +24,7 @@ const COMMANDS = {
   dashboard: "Generate unified HTML dashboard",
   serve: "Start the portfolio dashboard web server",
   connect: "Connect to a farmer instance",
+  next: "Show sprints ready for grainulator execution",
   doctor: "Check health of orchard setup",
   help: "Show this help message",
 };
@@ -333,6 +334,16 @@ async function main() {
           }
           break;
         }
+      }
+      break;
+    }
+    case "next": {
+      const { emitInstructions, printNext } = require("../lib/emit.js");
+      if (jsonMode) {
+        const instructions = emitInstructions(config, root);
+        console.log(JSON.stringify(instructions, null, 2));
+      } else {
+        printNext(config, root);
       }
       break;
     }
