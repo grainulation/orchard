@@ -21,7 +21,6 @@
   "files": [
     "bin/",
     "lib/",
-    "public/",
     "templates/",
     "README.md",
     "LICENSE",
