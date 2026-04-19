@@ -98,7 +98,7 @@ Depends only on `@grainulation/barn` (internal ecosystem utilities); no third-pa
 | [wheat](https://github.com/grainulation/wheat)               | Research engine -- grow structured evidence                 |
 | [farmer](https://github.com/grainulation/farmer)             | Permission dashboard -- approve AI actions in real time     |
 | [barn](https://github.com/grainulation/barn)                 | Shared tools -- templates, validators, sprint detection     |
-| [mill](https://github.com/grainulation/mill)                 | Format conversion -- export to PDF, CSV, slides, 24 formats |
+| [mill](https://github.com/grainulation/mill)                 | Format conversion -- export to PDF, CSV, slides, 26 formats |
 | [silo](https://github.com/grainulation/silo)                 | Knowledge storage -- reusable claim libraries and packs     |
 | [harvest](https://github.com/grainulation/harvest)           | Analytics -- cross-sprint patterns and prediction scoring   |
 | **orchard**                                                  | Orchestration -- multi-sprint coordination and dependencies |
