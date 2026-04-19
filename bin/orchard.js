@@ -77,6 +77,12 @@ async function main() {
     process.exit(0);
   }
 
+  if (command === "--version" || command === "-v") {
+    const pkg = require("../package.json");
+    console.log(pkg.version);
+    process.exit(0);
+  }
+
   if (!COMMANDS[command]) {
     console.error(`orchard: unknown command: ${command}`);
     console.error(`Run "orchard help" to see available commands.`);
