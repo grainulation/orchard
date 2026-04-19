@@ -1,10 +1,35 @@
 #!/usr/bin/env node
-"use strict";
 
-const path = require("node:path");
-const fs = require("node:fs");
+import path from "node:path";
+import fs from "node:fs";
+import { fileURLToPath } from "node:url";
 
-const { setVerbose, vlog: barnVlog } = require("@grainulation/barn/cli");
+import { setVerbose, vlog as barnVlog } from "@grainulation/barn/cli";
+
+import {
+  buildGraph,
+  topoSort,
+  detectCycles,
+  generateMermaid,
+  printDependencyGraph,
+} from "../lib/planner.js";
+import { printStatus, getStatusData } from "../lib/tracker.js";
+import { assignSprint } from "../lib/assignments.js";
+import { syncAll } from "../lib/sync.js";
+import { generateDashboard } from "../lib/dashboard.js";
+import {
+  detectConflicts,
+  filterBySeverity,
+  printConflicts,
+} from "../lib/conflicts.js";
+import { applyDecomposition, printDecomposition } from "../lib/decompose.js";
+import * as hack from "../lib/hackathon.js";
+import { emitInstructions, printNext } from "../lib/emit.js";
+import { runChecks, printReport } from "../lib/doctor.js";
+import { connect as farmerConnect } from "../lib/farmer.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const verbose =
   process.argv.includes("--verbose") || process.argv.includes("-v");
@@ -78,7 +103,9 @@ async function main() {
   }
 
   if (command === "--version" || command === "-v") {
-    const pkg = require("../package.json");
+    const pkg = JSON.parse(
+      fs.readFileSync(path.join(__dirname, "..", "package.json"), "utf-8"),
+    );
     console.log(pkg.version);
     process.exit(0);
   }
@@ -111,7 +138,6 @@ async function main() {
   }
 
   if (command === "connect") {
-    const { connect: farmerConnect } = require("../lib/farmer.js");
     const connectArgs = process.argv.slice(process.argv.indexOf("connect") + 1);
     const rootIdx = connectArgs.indexOf("--root");
     let targetDir = process.cwd();
@@ -123,7 +149,7 @@ async function main() {
   }
 
   if (command === "init") {
-    const { parseArgs } = require("node:util");
+    const { parseArgs } = await import("node:util");
     let rootDir = process.cwd();
     try {
       const { values } = parseArgs({
@@ -170,11 +196,6 @@ async function main() {
   switch (command) {
     case "plan": {
       if (jsonMode) {
-        const {
-          buildGraph,
-          topoSort,
-          detectCycles,
-        } = require("../lib/planner.js");
         const graph = buildGraph(config);
         const order = topoSort(config);
         const cycles = detectCycles(config);
@@ -185,12 +206,10 @@ async function main() {
       const planFormat =
         fmtIdx !== -1 && args[fmtIdx + 1] ? args[fmtIdx + 1] : null;
       if (args.includes("--mermaid") || planFormat === "mermaid") {
-        const { generateMermaid } = require("../lib/planner.js");
         console.log(generateMermaid(config));
         break;
       }
       if (planFormat === "ascii" || !planFormat) {
-        const { printDependencyGraph } = require("../lib/planner.js");
         printDependencyGraph(config, root);
         break;
       }
@@ -202,12 +221,10 @@ async function main() {
     }
     case "status": {
       if (jsonMode) {
-        const { getStatusData } = require("../lib/tracker.js");
         const data = getStatusData(config, root);
         console.log(JSON.stringify(data, null, 2));
         break;
       }
-      const { printStatus } = require("../lib/tracker.js");
       printStatus(config, root);
       break;
     }
@@ -218,27 +235,19 @@ async function main() {
         console.error("orchard: usage: orchard assign <sprint-path> <person>");
         process.exit(1);
       }
-      const { assignSprint } = require("../lib/assignments.js");
       assignSprint(config, root, sprintPath, person);
       break;
     }
     case "sync": {
-      const { syncAll } = require("../lib/sync.js");
       syncAll(config, root);
       break;
     }
     case "dashboard": {
-      const { generateDashboard } = require("../lib/dashboard.js");
       const outPath = args[1] || path.join(root, "orchard-dashboard.html");
       generateDashboard(config, root, outPath);
       break;
     }
     case "conflicts": {
-      const {
-        detectConflicts,
-        filterBySeverity,
-        printConflicts,
-      } = require("../lib/conflicts.js");
       const sevIdx = args.indexOf("--severity");
       const severity =
         sevIdx !== -1 && args[sevIdx + 1] ? args[sevIdx + 1] : "info";
@@ -272,21 +281,18 @@ async function main() {
       const maxSprints =
         maxIdx !== -1 && args[maxIdx + 1] ? parseInt(args[maxIdx + 1], 10) : 5;
       if (args.includes("--apply")) {
-        const { applyDecomposition } = require("../lib/decompose.js");
         const sprints = applyDecomposition(root, question, { maxSprints });
         console.log(`Created ${sprints.length} sub-sprints for: "${question}"`);
         for (const s of sprints) {
           console.log(`  ${s.path}`);
         }
       } else {
-        const { printDecomposition } = require("../lib/decompose.js");
         printDecomposition(question, { maxSprints });
       }
       break;
     }
     case "hackathon": {
       const sub = args[1];
-      const hack = require("../lib/hackathon.js");
       switch (sub) {
         case "init": {
           const nameIdx = args.indexOf("--name");
@@ -343,7 +349,6 @@ async function main() {
       break;
     }
     case "next": {
-      const { emitInstructions, printNext } = require("../lib/emit.js");
       if (jsonMode) {
         const instructions = emitInstructions(config, root);
         console.log(JSON.stringify(instructions, null, 2));
@@ -353,7 +358,6 @@ async function main() {
       break;
     }
     case "doctor": {
-      const { runChecks, printReport } = require("../lib/doctor.js");
       const result = runChecks(root || process.cwd());
       if (jsonMode) {
         console.log(JSON.stringify(result, null, 2));

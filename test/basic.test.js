@@ -1,16 +1,17 @@
-"use strict";
-
-const assert = require("node:assert");
-const path = require("node:path");
+import assert from "node:assert";
+import path from "node:path";
+import fs from "node:fs";
+import os from "node:os";
 
 // ---- Planner tests ----
 
-const {
+import {
   topoSort,
   detectCycles,
   daysUntil,
   buildGraph,
-} = require("../lib/planner.js");
+  generateMermaid,
+} from "../lib/planner.js";
 
 // topoSort: empty config
 {
@@ -112,7 +113,12 @@ const {
 
 // ---- Conflicts tests ----
 
-const { couldContradict } = require("../lib/conflicts.js");
+import {
+  couldContradict,
+  detectConflicts,
+  filterBySeverity,
+  SEVERITY,
+} from "../lib/conflicts.js";
 
 // couldContradict: one negated
 {
@@ -138,7 +144,7 @@ const { couldContradict } = require("../lib/conflicts.js");
 
 // ---- Assignments tests ----
 
-const { getWorkload, findOverloaded } = require("../lib/assignments.js");
+import { getWorkload, findOverloaded } from "../lib/assignments.js";
 
 // getWorkload: groups correctly
 {
@@ -176,7 +182,7 @@ const { getWorkload, findOverloaded } = require("../lib/assignments.js");
 
 // ---- Sync tests ----
 
-const { inferStatus } = require("../lib/sync.js");
+import { inferStatus, findReady } from "../lib/sync.js";
 
 {
   assert.strictEqual(inferStatus({ status: "done" }, {}), "done");
@@ -353,12 +359,8 @@ const { inferStatus } = require("../lib/sync.js");
 
 // ---- Conflicts: additional tests ----
 
-const { detectConflicts } = require("../lib/conflicts.js");
-
 // detectConflicts: constraint vs recommendation across sprints
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-conflict-"));
   const sprintA = path.join(tmp, "sprint-a");
   const sprintB = path.join(tmp, "sprint-b");
@@ -412,8 +414,6 @@ const { detectConflicts } = require("../lib/conflicts.js");
 
 // detectConflicts: no conflict within same sprint
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-same-"));
   const sprintA = path.join(tmp, "sprint-a");
   fs.mkdirSync(sprintA, { recursive: true });
@@ -468,7 +468,7 @@ const { detectConflicts } = require("../lib/conflicts.js");
 
 // ---- Tracker: readSprintState tests ----
 
-const { readSprintState } = require("../lib/tracker.js");
+import { readSprintState } from "../lib/tracker.js";
 
 // readSprintState: nonexistent directory
 {
@@ -481,8 +481,6 @@ const { readSprintState } = require("../lib/tracker.js");
 
 // readSprintState: directory with claims.json
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-tracker-"));
   fs.writeFileSync(
     path.join(tmp, "claims.json"),
@@ -504,8 +502,6 @@ const { readSprintState } = require("../lib/tracker.js");
 
 // readSprintState: directory with claims.json + compilation.json
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-tracker2-"));
   fs.writeFileSync(
     path.join(tmp, "claims.json"),
@@ -525,8 +521,6 @@ const { readSprintState } = require("../lib/tracker.js");
 
 // readSprintState: empty claims
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-tracker3-"));
   fs.writeFileSync(
     path.join(tmp, "claims.json"),
@@ -541,8 +535,6 @@ const { readSprintState } = require("../lib/tracker.js");
 }
 
 // ---- Sync: findReady tests ----
-
-const { findReady } = require("../lib/sync.js");
 
 // findReady: sprint with all deps done is ready
 {
@@ -590,8 +582,6 @@ const { findReady } = require("../lib/sync.js");
 }
 
 // ---- Mermaid generation tests ----
-
-const { generateMermaid } = require("../lib/planner.js");
 
 // generateMermaid: empty config
 {
@@ -653,8 +643,6 @@ const { generateMermaid } = require("../lib/planner.js");
 
 // ---- Conflict severity tests ----
 
-const { filterBySeverity, SEVERITY } = require("../lib/conflicts.js");
-
 // filterBySeverity: filters correctly
 {
   const conflicts = [
@@ -678,8 +666,6 @@ const { filterBySeverity, SEVERITY } = require("../lib/conflicts.js");
 
 // detectConflicts now includes severity and actions
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-sev-"));
   const sprintA = path.join(tmp, "sprint-a");
   const sprintB = path.join(tmp, "sprint-b");
@@ -726,7 +712,7 @@ const { filterBySeverity, SEVERITY } = require("../lib/conflicts.js");
 
 // ---- Decompose tests ----
 
-const { decompose, scoreFacets, FACETS } = require("../lib/decompose.js");
+import { decompose, scoreFacets, FACETS } from "../lib/decompose.js";
 
 // scoreFacets: returns scores for all facets
 {
@@ -775,12 +761,10 @@ const { decompose, scoreFacets, FACETS } = require("../lib/decompose.js");
 
 // ---- Hackathon tests ----
 
-const hackathonLib = require("../lib/hackathon.js");
+import * as hackathonLib from "../lib/hackathon.js";
 
 // hackathon: init, add team, leaderboard, end
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-hack-"));
 
   // Need orchard.json
@@ -830,8 +814,6 @@ const hackathonLib = require("../lib/hackathon.js");
 
 // hackathon: init fails if already exists
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-hack2-"));
   fs.writeFileSync(
     path.join(tmp, "orchard.json"),
@@ -853,8 +835,6 @@ const hackathonLib = require("../lib/hackathon.js");
 
 // hackathon: leaderboard scoring with claims
 {
-  const fs = require("node:fs");
-  const os = require("node:os");
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "orchard-hack3-"));
   fs.writeFileSync(
     path.join(tmp, "orchard.json"),
