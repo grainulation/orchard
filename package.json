@@ -61,6 +61,6 @@
     "access": "public"
   },
   "dependencies": {
-    "@grainulation/barn": "^1.2.1"
+    "@grainulation/barn": "^1.3.0"
   }
 }
