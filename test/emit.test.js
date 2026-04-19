@@ -32,9 +32,7 @@ describe("emitInstructions()", () => {
     writeClaims(sprintDir, { question: "Should we use Kafka?" });
 
     const config = {
-      sprints: [
-        { path: "sprint-a", status: "not-started", depends_on: [] },
-      ],
+      sprints: [{ path: "sprint-a", status: "not-started", depends_on: [] }],
     };
 
     const result = emitInstructions(config, tmp);
@@ -115,7 +113,12 @@ describe("emitInstructions()", () => {
 
     const config = {
       sprints: [
-        { path: "s", status: "not-started", depends_on: [], question: "From config" },
+        {
+          path: "s",
+          status: "not-started",
+          depends_on: [],
+          question: "From config",
+        },
       ],
     };
 
