@@ -89,24 +89,24 @@ async function main() {
     process.exit(1);
   }
 
-  // Serve command — start the HTTP server (ESM module)
+  // Serve command — start the HTTP server in-process via ESM dynamic import.
+  // start() installs its own SIGTERM/SIGINT handlers and crash handlers.
   if (command === "serve") {
-    const serverPath = path.join(__dirname, "..", "lib", "server.js");
-    const { spawn } = require("node:child_process");
-
-    // Forward remaining args to the server
-    const serverArgs = args.slice(1);
-    const child = spawn(process.execPath, [serverPath, ...serverArgs], {
-      stdio: "inherit",
-    });
-
-    child.on("close", (code) => process.exit(code ?? 0));
-    child.on("error", (err) => {
+    const serveArgs = args.slice(1);
+    function argVal(name, fallback) {
+      const i = serveArgs.indexOf(`--${name}`);
+      return i !== -1 && serveArgs[i + 1] ? serveArgs[i + 1] : fallback;
+    }
+    const port = parseInt(argVal("port", "9097"), 10);
+    const root = argVal("root", process.cwd());
+    const corsOrigin = argVal("cors", null);
+    try {
+      const { start } = await import("../lib/server.js");
+      start({ port, root, corsOrigin, verbose });
+    } catch (err) {
       console.error(`orchard: failed to start server: ${err.message}`);
       process.exit(1);
-    });
-    process.on("SIGTERM", () => child.kill("SIGTERM"));
-    process.on("SIGINT", () => child.kill("SIGINT"));
+    }
     return;
   }
 
