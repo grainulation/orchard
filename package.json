@@ -36,7 +36,7 @@
     "format:check": "npx prettier@3.3 --check ."
   },
   "dependencies": {
-    "@grainulation/barn": "^1.2.0"
+    "@grainulation/barn": "^1.2.1"
   },
   "keywords": [
     "research",
