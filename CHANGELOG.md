@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.1.4 — 2026-04-19
+
+### Security
+
+- **Symlink-safe static serve.** The `public/` static file guard previously used `path.resolve()` + `startsWith()`, which could be bypassed by a symlink planted inside `public/` pointing at e.g. `/etc`. Replaced with `resolveSafe()` from `@grainulation/barn/paths`, which resolves via `fs.realpathSync` and rejects symlink escape. Defense in depth — no known exploit against the prior guard.
+
+### Internal
+
+- CI: install dependencies before running tests
+- CI: allow `@grainulation/*` in the zero-dependency gate
+
+## 1.1.3 — 2026-04-19
+
+(Production-polish sprint release — SBOM + OIDC provenance; security-remediation prescriptions shipped.)
+
 ## 1.1.2 -- 2026-04-18
 
 ### Added
