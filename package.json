@@ -32,6 +32,9 @@
     "start": "node bin/orchard.js status",
     "serve": "node lib/server.js"
   },
+  "dependencies": {
+    "@grainulation/barn": "^1.2.0"
+  },
   "keywords": [
     "research",
     "sprint",

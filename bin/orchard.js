@@ -4,13 +4,12 @@
 const path = require("node:path");
 const fs = require("node:fs");
 
+const { setVerbose, vlog: barnVlog } = require("@grainulation/barn/cli");
+
 const verbose =
   process.argv.includes("--verbose") || process.argv.includes("-v");
-function vlog(...a) {
-  if (!verbose) return;
-  const ts = new Date().toISOString();
-  process.stderr.write(`[${ts}] orchard: ${a.join(" ")}\n`);
-}
+setVerbose(verbose);
+const vlog = (...a) => barnVlog("orchard:", ...a);
 
 const COMMANDS = {
   init: "Initialize orchard.json in the current directory",
