@@ -28,7 +28,7 @@
     "CONTRIBUTING.md"
   ],
   "scripts": {
-    "test": "node test/basic.test.js",
+    "test": "node test/basic.test.js && node --test test/emit.test.js",
     "start": "node bin/orchard.js status",
     "serve": "node lib/server.js"
   },
@@ -54,5 +54,8 @@
   "homepage": "https://orchard.grainulation.com",
   "engines": {
     "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

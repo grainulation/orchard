@@ -87,9 +87,9 @@ Orchard flags two types of cross-sprint conflicts:
 1. **Opposing recommendations** -- two sprints make recommendations on the same topic that contradict
 2. **Constraint-recommendation tension** -- one sprint's constraints conflict with another's recommendations
 
-## Zero dependencies
+## Zero third-party dependencies
 
-Node built-in modules only.
+Depends only on `@grainulation/barn` (internal ecosystem utilities); no third-party runtime deps. Node built-ins otherwise.
 
 ## Part of the grainulation ecosystem
 
