@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.5 — 2026-04-20
+
+### Fixed
+
+- **`orchard serve` dashboard 404.** `lib/server.js:765-767` reads `PUBLIC_DIR/index.html` at runtime, but `public/` was not declared in `package.json#files`, so the directory was absent from published tarballs 1.1.0–1.1.4. Any user running `npx @grainulation/orchard serve` hit `HTTP 500: Error reading dashboard`. Added `"public/"` to the `files` array. The `orchard dashboard` CLI command (static HTML emit) was always fine because `templates/` was already declared; only `serve` broke.
+
+### Internal
+
+- Added `test/tarball.test.js` regression test that asserts `public/index.html` (and every other load-bearing file) is present in `npm pack --dry-run` output AND after extracting a real tarball. Prevents the same drift class from recurring silently.
+
 ## 1.1.4 — 2026-04-19
 
 ### Security
